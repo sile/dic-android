@@ -101,16 +101,10 @@
     FINALLY
     (return (cons (first keys) list))))
         
-(defun collect-keys (&aux keys)
-  (each-line (line "/home/ohta/data/dic/LgmnEn/title.uniq")
-    (push line keys))
-  keys)
-
-(defun build (text-dic-dir)
-  (let ((*default-pathname-defaults* (probe-file text-dic-dir))
-        (trie (make-node))
+(defun build (keys)
+  (let ((trie (make-node))
         (memo (make-hash-table :test #'node=)))
-    (dolist (key (collect-keys) (share trie memo))
+    (dolist (key (unique (sort keys #'string<)) (share trie memo))
       (let ((in (stream:make key)))
         (declare (dynamic-extent in))
         (insert in trie memo)))))

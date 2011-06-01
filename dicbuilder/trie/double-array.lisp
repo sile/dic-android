@@ -125,8 +125,8 @@
             DO
             (write-int c out :width 2)))))
 
-(defun build (text-dic-dir output-dir)
-  (build-from-trie (trie:build text-dic-dir) output-dir))
+(defun build (keys output-dir)
+  (build-from-trie (trie:build keys) output-dir))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; auxiliary function(2)
