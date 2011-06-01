@@ -104,9 +104,9 @@
     (adjust da)
 
     (with-slots (base chck opts) da
-      (with-open-file (out #P"surface-id.bin" :direction :output 
-                                              :if-exists :supersede
-                                              :element-type 'uint1)
+      (with-open-file (out dic:*path.surface-id* :direction :output 
+                                                 :if-exists :supersede
+                                                 :element-type 'uint1)
         (let ((node-count (node-count da)))
           (write-int (node-count da) out :width 4)
           
@@ -117,9 +117,9 @@
                     (ldb (byte 24 40) enc) (aref opts i))
               (write-int enc out :width 8))))))
 
-    (with-open-file (out #P"code-map.bin" :direction :output
-                                          :if-exists :supersede
-                                          :element-type 'uint1)
+    (with-open-file (out dic:*path.code-map* :direction :output
+                                             :if-exists :supersede
+                                             :element-type 'uint1)
       (write-int (length code-map) out :width 4)
       (loop FOR c ACROSS code-map
             DO
@@ -154,13 +154,13 @@
 
 (defun load-dic (dic-dir &aux (*default-pathname-defaults* (probe-file dic-dir)))
   (flet ((load-nodes ()
-           (with-open-file (in #P"surface-id.bin" :element-type 'uint1)
+           (with-open-file (in dic:*path.surface-id* :element-type 'uint1)
              (let* ((node-count (read-int in :width 4))
                     (nodes (make-array node-count :element-type 'uint8)))
                (dotimes (i node-count nodes)
                  (setf (aref nodes i) (read-int in :width 8))))))
          (load-code-map ()
-           (with-open-file (in #P"code-map.bin" :element-type 'uint1)
+           (with-open-file (in dic:*path.code-map* :element-type 'uint1)
              (let* ((code-limit (read-int in :width 4))
                     (code-map (make-array code-limit :element-type 'uint2)))
                (dotimes (i code-limit code-map)

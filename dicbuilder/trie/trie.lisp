@@ -93,18 +93,10 @@
           (push-child in parent))
       (insert (stream:eat in) node memo))))
 
-(defun unique (keys)
-  (loop FOR (prev cur) ON keys
-        WHILE cur
-        UNLESS (string= (the simple-string prev) (the simple-string cur))
-    COLLECT cur INTO list
-    FINALLY
-    (return (cons (first keys) list))))
-        
-(defun build (keys)
+(defun build (keys)  ; NOTE: keys must be sorted and each element must be unique
   (let ((trie (make-node))
         (memo (make-hash-table :test #'node=)))
-    (dolist (key (unique (sort keys #'string<)) (share trie memo))
+    (dolist (key keys (share trie memo))
       (let ((in (stream:make key)))
         (declare (dynamic-extent in))
         (insert in trie memo)))))
