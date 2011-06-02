@@ -54,8 +54,9 @@
 ;;;; main function
 (defmain main (source-text-dictionary output-directory)
   "~A source-text-dictionary output-directory"
-  (dic:build source-text-dictionary output-directory)
-  (format *error-output* "; DONE"))
+  (dic:build source-text-dictionary
+             (pathname (format nil "~a/" output-directory)))
+  (format *error-output* "; DONE~%"))
 
 (sb-ext:save-lisp-and-die "dic-build" :executable t :toplevel #'main)
 

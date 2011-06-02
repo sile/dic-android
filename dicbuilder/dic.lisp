@@ -34,7 +34,8 @@
       (setf (aref map i) (nreverse offsets)))
     map))
 
-(defun store-id=>offsets (map output-dir &aux (*default-pathname-defaults* output-dir))
+(defun store-id=>offsets (map output-dir &aux (*default-pathname-defaults* 
+                                               (probe-file output-dir)))
   (with-open-binary-output-file (out.id2off *path.id2offsets*)
     (with-open-binary-output-file (out.offs *path.offsets*)
       (loop FOR offsets ACROSS map
