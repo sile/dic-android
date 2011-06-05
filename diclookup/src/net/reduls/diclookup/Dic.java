@@ -17,15 +17,26 @@ public final class Dic {
         public final String data;
 
         public Entry(RandomAccessFile entry) throws IOException {
-            title = entry.readLine();
-            summary = entry.readLine();
+            title = readLine(entry);
+            summary = readLine(entry);
             
             StringBuilder sb = new StringBuilder();
             String line;
-            while((line=entry.readLine()).equals(END_OF_ENTRY)==false) {
+            while((line=readLine(entry)).equals(END_OF_ENTRY)==false) {
                 sb.append(line);
             }
             data = sb.toString();
+        }
+        
+        private String readLine(RandomAccessFile entry) throws IOException {
+            final long beg = entry.getFilePointer();
+            while(entry.read()!='\n');
+            final long end = entry.getFilePointer();
+            final byte[] bytes = new byte[(int)(end-beg-1)];
+            entry.seek(beg);
+            entry.readFully(bytes);
+            entry.read();
+            return new String(bytes, "UTF-8");
         }
     }
 
