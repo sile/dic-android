@@ -25,7 +25,7 @@ public final class KeyId {
 
     public void eachPredictive(String key, Dic.Callback fn) {
         int node = 0;
-        int id = 0;
+        int id = -1;
 
         for(int i=0;; i++) {
             if(i==key.length()) {
@@ -50,7 +50,7 @@ public final class KeyId {
         for(Character arc : charcode.arcs()) {
             final int next = base(node)+arc;
             if(chck(next)==arc)
-                if(traverseDescendant(next, nextId(id,node), fn)==false)
+                if(traverseDescendant(next, nextId(id,next), fn)==false)
                     return false;
         }
         return true;

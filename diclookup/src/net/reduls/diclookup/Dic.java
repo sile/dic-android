@@ -17,7 +17,6 @@ public final class Dic {
         public final String data;
 
         public Entry(RandomAccessFile entry) throws IOException {
-            entry.readLine(); // key
             title = entry.readLine();
             summary = entry.readLine();
             
