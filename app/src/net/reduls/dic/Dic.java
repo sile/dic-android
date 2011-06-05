@@ -14,9 +14,11 @@ import android.text.Html;
 import android.content.Intent;
 import android.view.inputmethod.InputMethodManager;
 import android.content.Context;
+import android.text.TextWatcher;
+import android.text.Editable;
 import java.util.List;
 
-public class Dic extends Activity implements OnKeyListener, OnClickListener
+public class Dic extends Activity implements OnKeyListener, OnClickListener, TextWatcher
 {
     private static final int SEARCH_RESULT_LIMIT=16;
     public net.reduls.diclookup.Dic dic;
@@ -32,9 +34,32 @@ public class Dic extends Activity implements OnKeyListener, OnClickListener
         setContentView(R.layout.main);
 
         View searchBar = findViewById(R.id.search_bar);
-        searchBar.setOnKeyListener(this);
+        //searchBar.setOnKeyListener(this);
+        ((EditText)searchBar).addTextChangedListener(this);
 
         searchBar.setFocusable(true);
+    }
+
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+    }
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+    }
+    public void afterTextChanged(Editable s) {
+        String key = s.toString();
+        LinearLayout resultArea = (LinearLayout)findViewById(R.id.search_result_area);
+        resultArea.removeAllViews();
+        
+        if(key.length() > 0) { 
+            for(net.reduls.diclookup.Dic.Entry e : dic.lookup(key, SEARCH_RESULT_LIMIT)) {
+                TextView txt = new TextView(this);
+                String title = String.format(getText(R.string.result_title).toString(), e.title);
+                String summary = formatEntry(e.summary);
+                txt.setText(Html.fromHtml(title+"<br />"+summary));
+                txt.setOnClickListener(this);
+                txt.setId(e.id);
+                resultArea.addView(txt);
+            }
+        }
     }
 
     public void onClick (View v) {
