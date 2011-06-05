@@ -11,23 +11,20 @@ import android.widget.TextView;
 import android.widget.LinearLayout;
 import android.util.Log;
 import android.text.Html;
+import android.content.Intent;
 import java.util.List;
 
 public class Dic extends Activity implements OnKeyListener, OnClickListener
 {
-    private static final int SEARCH_RESULT_LIMIT=20;
-    private net.reduls.diclookup.Dic dic;
+    private static final int SEARCH_RESULT_LIMIT=32;
+    public net.reduls.diclookup.Dic dic;
 
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
-        // TODO: configure
-        try {
-            dic = new net.reduls.diclookup.Dic("/mnt/sdcard/");
-        } catch(Exception e) {
-            Log.e("REDULS.DIC", e.getMessage());
-        }
+        
+        dic = ((DicLookup)this.getApplication()).getDic();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
@@ -39,7 +36,9 @@ public class Dic extends Activity implements OnKeyListener, OnClickListener
     public void onClick (View v) {
         final int entryId = v.getId();
         TextView txt = (TextView)v;
-        txt.setText("ID: "+entryId);
+        Intent i = new Intent(this, Entry.class);
+        i.putExtra("entry.id", entryId);
+        startActivity(i);
     }
     
     public boolean onKey(View v, int arg1, KeyEvent event) {
