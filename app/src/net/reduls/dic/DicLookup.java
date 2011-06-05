@@ -10,7 +10,7 @@ public class DicLookup extends Application {
     public void onCreate() {
         // TODO: configure
         try {
-            dic = new net.reduls.diclookup.Dic("/mnt/sdcard/");
+            dic = new net.reduls.diclookup.Dic("/mnt/sdcard/eedic.data/");
         } catch(Exception e) {
             Log.e("REDULS.DIC", e.getMessage());
         }        
