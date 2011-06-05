@@ -1,0 +1,1 @@
+emulator -avd em22
