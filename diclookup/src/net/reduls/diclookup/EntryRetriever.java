@@ -49,13 +49,23 @@ public final class EntryRetriever {
             
             for(int e = entryBeg; e < entryEnd; e++) {
                 in.seek(offsets[e]);
-                entrys.add(new Dic.Entry(in));
+                entrys.add(new Dic.Entry(e, in));
             }
 
             return entrys;
         } finally {
             in.close();
         }
+    }
+
+    public Dic.Entry getEntry(int entryId) throws IOException {
+        final RandomAccessFile in = new RandomAccessFile(dataPath,"r");
+        try {
+            in.seek(offsets[entryId]);
+            return new Dic.Entry(entryId, in);
+        } finally {
+            in.close();
+        }        
     }
 }
 

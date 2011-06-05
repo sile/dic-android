@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.KeyEvent;
 import android.view.View.OnKeyListener;
+import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.LinearLayout;
@@ -12,7 +13,7 @@ import android.util.Log;
 import android.text.Html;
 import java.util.List;
 
-public class Dic extends Activity implements OnKeyListener
+public class Dic extends Activity implements OnKeyListener, OnClickListener
 {
     private static final int SEARCH_RESULT_LIMIT=20;
     private net.reduls.diclookup.Dic dic;
@@ -34,6 +35,12 @@ public class Dic extends Activity implements OnKeyListener
         View searchBar = findViewById(R.id.search_bar);
         searchBar.setOnKeyListener(this);
     }
+
+    public void onClick (View v) {
+        final int entryId = v.getId();
+        TextView txt = (TextView)v;
+        txt.setText("ID: "+entryId);
+    }
     
     public boolean onKey(View v, int arg1, KeyEvent event) {
         String key = ((EditText)v).getText().toString();
@@ -47,6 +54,8 @@ public class Dic extends Activity implements OnKeyListener
                 String title = String.format(getText(R.string.result_title).toString(), e.title);
                 String summary = formatEntry(e.summary);
                 txt.setText(Html.fromHtml(title+"<br />"+summary));
+                txt.setOnClickListener(this);
+                txt.setId(e.id);
                 resultArea.addView(txt);
             }
         }

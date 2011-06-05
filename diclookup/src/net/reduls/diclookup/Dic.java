@@ -12,11 +12,13 @@ public final class Dic {
 
     public static final class Entry {
         private final static String END_OF_ENTRY = "-=+=-=+=-=+=-=+=-=+=-";
+        public final int id;
         public final String title;
         public final String summary;
         public final String data;
 
-        public Entry(RandomAccessFile entry) throws IOException {
+        public Entry(int entryId, RandomAccessFile entry) throws IOException {
+            id = entryId;
             title = readLine(entry);
             summary = readLine(entry);
             
@@ -64,6 +66,7 @@ public final class Dic {
                         return false;
                 }
             } catch (IOException e) {
+                // XXX:
                 System.err.println("ERROR: "+e.getMessage());
                 return false;
             }
