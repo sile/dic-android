@@ -34,10 +34,12 @@
       (setf (aref map i) (nreverse offsets)))
     map))
 
-(defun store-id=>offsets (map output-dir &aux (*default-pathname-defaults* 
+(defun store-id=>offsets (map entry-count output-dir &aux (*default-pathname-defaults* 
                                                (probe-file output-dir)))
   (with-open-binary-output-file (out.id2off *path.id2offsets*)
     (with-open-binary-output-file (out.offs *path.offsets*)
+      (write-int (length map) out.id2off :width 4)
+      (write-int entry-count out.offs :width 4)
       (loop FOR offsets ACROSS map
         DO
         (write-int (file-position out.offs) out.id2off :width 4)
@@ -59,7 +61,7 @@
           (with-time "make id => offsets:"
             (make-id=>offsets text-dic (length keys) da))))
     (with-time "store id => offsets:"
-      (store-id=>offsets id=>offsets output-dir))
+      (store-id=>offsets id=>offsets (length keys) output-dir))
     (with-time "copy data"
       (copy-file text-dic (merge-pathnames *path.data* output-dir))))
   'done)
