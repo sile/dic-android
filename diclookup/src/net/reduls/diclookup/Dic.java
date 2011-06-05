@@ -79,5 +79,14 @@ public final class Dic {
         keyid.eachPredictive(key, new EntryCollector(result, limit));
         return result;
     }
+
+    public Entry getEntryFromId(int entryId) {
+        try {
+            return retriever.getEntry(entryId);
+        } catch(IOException e) {
+            // TODO:
+            return null;
+        }
+    }
 }
 
