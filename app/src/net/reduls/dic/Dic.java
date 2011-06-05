@@ -9,10 +9,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.LinearLayout;
 import android.util.Log;
+import android.text.Html;
 import java.util.List;
 
 public class Dic extends Activity implements OnKeyListener
 {
+    private static final int SEARCH_RESULT_LIMIT=20;
     private net.reduls.diclookup.Dic dic;
 
     /** Called when the activity is first created. */
@@ -38,13 +40,24 @@ public class Dic extends Activity implements OnKeyListener
 
         LinearLayout resultArea = (LinearLayout)findViewById(R.id.search_result_area);
         resultArea.removeAllViews();
-
-        for(net.reduls.diclookup.Dic.Entry e : dic.lookup(key, 5)) {
-            TextView txt = new TextView(this);
-            txt.setText(e.title+"\n"+e.summary);
-            resultArea.addView(txt);
+        
+        if(key.length() > 0) {
+            for(net.reduls.diclookup.Dic.Entry e : dic.lookup(key, SEARCH_RESULT_LIMIT)) {
+                TextView txt = new TextView(this);
+                String title = String.format(getText(R.string.result_title).toString(), e.title);
+                String summary = formatEntry(e.summary);
+                txt.setText(Html.fromHtml(title+"<br />"+summary));
+                resultArea.addView(txt);
+            }
         }
 
         return false;
+    }
+
+    private String formatEntry(String text) {
+        return
+            text.replaceAll("`([^`]*)`","<b>$1</b>")
+            .replaceAll("\\{([^}]*)\\}","<small><i><b><font color=\"red\">$1</font></b></i></small>")
+            .replaceAll("\\[([^\\]]*)\\]","<small><u><b><font color=\"blue\">$1</font></b></u></small>");
     }
 }
