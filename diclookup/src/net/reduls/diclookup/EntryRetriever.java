@@ -48,7 +48,6 @@ public final class EntryRetriever {
             final List<Dic.Entry> entrys = new ArrayList<Dic.Entry>();    
             
             for(int e = entryBeg; e < entryEnd; e++) {
-                System.out.println("? "+e+" "+offsets.length);
                 in.seek(offsets[e]);
                 entrys.add(new Dic.Entry(in));
             }

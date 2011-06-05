@@ -23,7 +23,7 @@ public final class Dic {
             StringBuilder sb = new StringBuilder();
             String line;
             while((line=readLine(entry)).equals(END_OF_ENTRY)==false) {
-                sb.append(line);
+                sb.append(line+"\n");
             }
             data = sb.toString();
         }
@@ -47,28 +47,34 @@ public final class Dic {
         retriever = new EntryRetriever(dictionaryDirectory);
     }
     
-    private /*static*/ final class Cl implements Callback {
+    private final class EntryCollector implements Callback {
+        private final List<Entry> entrys;
+        private final int limit;
+        
+        public EntryCollector(List<Entry> entrys, int limit) {
+            this.entrys = entrys;
+            this.limit = limit;
+        }
+
         public boolean call(int id) {
-            System.out.println("# "+id);
             try {
                 for(Dic.Entry e : retriever.getEntryList(id)) {
-                    System.out.println(": "+e.title);
+                    entrys.add(e);
+                    if(entrys.size() >= limit)
+                        return false;
                 }
             } catch (IOException e) {
-                System.out.println("! "+e.getMessage());
+                System.err.println("ERROR: "+e.getMessage());
+                return false;
             }
             return true;
         }
     }
 
-    public List lookup(String key, int limit) {
+    public List<Entry> lookup(String key, int limit) {
         List<Entry> result = new ArrayList<Entry>();
-        keyid.eachPredictive(key, new Cl());
+        keyid.eachPredictive(key, new EntryCollector(result, limit));
         return result;
-    }
-
-    public static void main(String[] args) throws IOException {
-        new Dic(args[0]).lookup(args[1], 10);
     }
 }
 
