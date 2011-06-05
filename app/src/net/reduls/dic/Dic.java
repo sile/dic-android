@@ -7,6 +7,7 @@ import android.view.KeyEvent;
 import android.view.View.OnKeyListener;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.LinearLayout;
 import android.util.Log;
 import java.util.List;
 
@@ -33,13 +34,17 @@ public class Dic extends Activity implements OnKeyListener
     }
     
     public boolean onKey(View v, int arg1, KeyEvent event) {
-        TextView result = (TextView)findViewById(R.id.search_result);
         String key = ((EditText)v).getText().toString();
-        List<net.reduls.diclookup.Dic.Entry> entrys = dic.lookup(key, 1);
-        if(entrys.isEmpty())
-            result.setText("Not Found!");
-        else
-            result.setText(entrys.get(0).title+"\n"+entrys.get(0).summary);
+
+        LinearLayout resultArea = (LinearLayout)findViewById(R.id.search_result_area);
+        resultArea.removeAllViews();
+
+        for(net.reduls.diclookup.Dic.Entry e : dic.lookup(key, 5)) {
+            TextView txt = new TextView(this);
+            txt.setText(e.title+"\n"+e.summary);
+            resultArea.addView(txt);
+        }
+
         return false;
     }
 }
