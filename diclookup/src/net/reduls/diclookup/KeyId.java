@@ -38,11 +38,11 @@ public final class KeyId {
         charcode = new Char(dictionaryDirectory);
     }
 
-    public void eachCommonPrefix(String text, int start, Dic.Callback fn) {
+    public void eachCommonPrefix(String text, Dic.Callback fn) {
         int node = 0;
         int id = -1;
         
-        for(int i=start;; i++) {
+        for(int i=0;; i++) {
             if(isTerminal(node))
                 fn.call(id);
             
