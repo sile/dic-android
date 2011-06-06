@@ -2,6 +2,7 @@ package net.reduls.diclookup;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.io.RandomAccessFile;
 import java.io.IOException;
 
@@ -77,6 +78,11 @@ public final class Dic {
     public List<Entry> lookup(String key, int limit) {
         List<Entry> result = new ArrayList<Entry>();
         keyid.eachPredictive(key, new EntryCollector(result, limit));
+        // XXX:
+        if(result.isEmpty()) {
+            keyid.eachCommonPrefix(key, new EntryCollector(result, limit));
+            Collections.reverse(result);
+        }
         return result;
     }
 

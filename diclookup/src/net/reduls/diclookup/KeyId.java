@@ -44,7 +44,8 @@ public final class KeyId {
         
         for(int i=0;; i++) {
             if(isTerminal(node))
-                fn.call(id);
+                if(fn.call(id)==false)
+                    return;
             
             if(i==text.length())
                 return;
