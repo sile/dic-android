@@ -4,11 +4,15 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+
 public final class KeyId {
     private final long[] nodes;
     private final Char charcode;
 
     public KeyId(String dictionaryDirectory) throws IOException {
+        /*
         final DataInputStream in =
             new DataInputStream(new FileInputStream(dictionaryDirectory+"/surface-id.bin"));
         try {
@@ -19,8 +23,39 @@ public final class KeyId {
         } finally {
             in.close();
         }
+        */
+        final FileChannel cnl = 
+            new FileInputStream(dictionaryDirectory+"/surface-id.bin").getChannel();
+        try {
+            final ByteBuffer buf = cnl.map(FileChannel.MapMode.READ_ONLY, 0, cnl.size());
+            final int nodeCount = buf.getInt();
+            nodes = new long[nodeCount];
+            buf.asLongBuffer().get(nodes);
+        } finally {
+            cnl.close();
+        }
 
         charcode = new Char(dictionaryDirectory);
+    }
+
+    public void eachCommonPrefix(String text, int start, Dic.Callback fn) {
+        int node = 0;
+        int id = -1;
+        
+        for(int i=start;; i++) {
+            if(isTerminal(node))
+                fn.call(id);
+            
+            if(i==text.length())
+                return;
+            
+            final char arc = charcode.code(text.charAt(i));
+            final int next = base(node)+arc;
+            if(chck(next) != arc)
+                return;
+            node = next;
+            id = nextId(id,node);
+        }
     }
 
     public void eachPredictive(String key, Dic.Callback fn) {
