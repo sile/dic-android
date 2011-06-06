@@ -13,6 +13,10 @@ import java.util.List;
 import java.util.ArrayList;
 import android.graphics.Typeface;
 import android.text.style.StyleSpan;
+import android.text.style.BackgroundColorSpan;
+import android.text.style.UnderlineSpan;
+import android.graphics.Color;
+import android.text.TextPaint;
 
 public class DataFormatter {
     private static class StyleWithRegion {
@@ -43,6 +47,12 @@ public class DataFormatter {
             case '`':
                 i = format1(text, i+1, sb, styles);
                 break;
+            case '{':
+                i = format2(text, i+1, sb, styles);
+                break;
+            case '[':
+                i = format3(text, i+1, sb, styles);
+                break;
             default:
                 sb.append(text.charAt(i));
             }
@@ -53,7 +63,23 @@ public class DataFormatter {
         int end = text.indexOf('`', start);
         styles.add(new StyleWithRegion(new StyleSpan(Typeface.BOLD), sb.length(), sb.length()+end-start));
         sb.append(text.substring(start,end));
-        return end+1;
+        return end;
+    }
+
+    private static int format2(String text, int start, StringBuilder sb, List<StyleWithRegion> styles) {
+        int end = text.indexOf('}', start);
+        styles.add(new StyleWithRegion(new StyleSpan(Typeface.BOLD), sb.length(), sb.length()+end-start));
+        styles.add(new StyleWithRegion(new BackgroundColorSpan(Color.BLUE), sb.length(), sb.length()+end-start));
+        sb.append(text.substring(start,end));
+        return end;
+    }
+
+    private static int format3(String text, int start, StringBuilder sb, List<StyleWithRegion> styles) {
+        int end = text.indexOf(']', start);
+        styles.add(new StyleWithRegion(new StyleSpan(Typeface.BOLD), sb.length(), sb.length()+end-start));
+        styles.add(new StyleWithRegion(new UnderlineSpan(), sb.length(), sb.length()+end-start));
+        sb.append(text.substring(start,end));
+        return end;
     }
 
     public static void link (Activity a, String text, Spannable span) {
@@ -111,6 +137,6 @@ public class DataFormatter {
             activity.startActivity(i);            
         }
         
-        //public void updateDrawState(TextPaint ds) {}
+        public void updateDrawState(TextPaint ds) {}
     }    
 }
