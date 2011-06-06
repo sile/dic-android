@@ -97,7 +97,7 @@ public class DataFormatter {
         for(int i = start; i < text.length(); i++) {
             switch(text.charAt(i)) {
             case ' ': case ',': case ':': case ';': case '(': case ')': case '━':
-            case '!': case '?': case '/':
+            case '!': case '?': case '/': case '—':
             case '"': case '.': case 10: case 13: case 9:
                 return i;
             }
@@ -109,7 +109,7 @@ public class DataFormatter {
         for(int i = start; i < text.length(); i++) {
             switch(text.charAt(i)) {
             case ' ': case ',': case ':': case ';': case '(': case ')': case '━':
-            case '!': case '?': case '/':
+            case '!': case '?': case '/': case '—':
             case '"': case '.': case 10: case 13: case 9:
                 continue;
             default:
