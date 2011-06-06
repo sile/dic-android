@@ -28,29 +28,9 @@ public class Entry extends Activity {
         setTitle(e.title);
 
         //
-        Spannable spannable = new SpannableString(e.data);
-        spannable.setSpan(new CS(this,0,10), 0, 10, 
-                          Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        SpannableString spannable = DataFormatter.format(e.data);
+        DataFormatter.link(this, spannable.toString(), spannable);
         entryView.setText(spannable, TextView.BufferType.SPANNABLE);
         entryView.setMovementMethod(LinkMovementMethod.getInstance());
-    }
-
-    private class CS extends ClickableSpan {
-        private Activity ac;
-        private int start,end;
-        public CS(Activity ac, int s, int e) {
-            super();
-            this.ac = ac;
-            start = s;
-            end = e;
-        }
-        
-        public void onClick(View v) {
-            Intent i = new Intent(ac, Dic.class);
-            i.putExtra("search.key", ((TextView)v).getText().toString().substring(start,end));
-            startActivity(i);            
-        }
-        
-        //public void updateDrawState(TextPaint ds) {}
     }
 }

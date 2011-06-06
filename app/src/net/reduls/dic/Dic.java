@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.KeyEvent;
-import android.view.View.OnKeyListener;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -18,7 +17,7 @@ import android.text.TextWatcher;
 import android.text.Editable;
 import java.util.List;
 
-public class Dic extends Activity implements OnKeyListener, OnClickListener, TextWatcher
+public class Dic extends Activity implements OnClickListener, TextWatcher
 {
     private static final int SEARCH_RESULT_LIMIT=16;
     public net.reduls.diclookup.Dic dic;
@@ -34,10 +33,14 @@ public class Dic extends Activity implements OnKeyListener, OnClickListener, Tex
         setContentView(R.layout.main);
 
         View searchBar = findViewById(R.id.search_bar);
-        //searchBar.setOnKeyListener(this);
         ((EditText)searchBar).addTextChangedListener(this);
 
-        searchBar.setFocusable(true);
+        //searchBar.setFocusable(true);
+
+        String key = getIntent().getStringExtra("search.key");
+        getIntent().putExtra("search.key","");
+        if(key!=null && key.equals("")==false)
+            ((EditText)searchBar).setText(key);
     }
 
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -70,37 +73,6 @@ public class Dic extends Activity implements OnKeyListener, OnClickListener, Tex
         startActivity(i);
     }
     
-    public boolean onKey(View v, int keyCode, KeyEvent event) {
-        String key = ((EditText)v).getText().toString();
-
-        LinearLayout resultArea = (LinearLayout)findViewById(R.id.search_result_area);
-        resultArea.removeAllViews();
-        
-        TextView tt = new TextView(this);
-        tt.setText("#"+key+":"+event.getAction());
-        resultArea.addView(tt);      
-  
-        if(event.getAction() == KeyEvent.ACTION_UP && 
-           key.length() > 0) {
-            //            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            //            inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
-
-
-            for(net.reduls.diclookup.Dic.Entry e : dic.lookup(key, SEARCH_RESULT_LIMIT)) {
-                TextView txt = new TextView(this);
-                String title = String.format(getText(R.string.result_title).toString(), e.title);
-                String summary = formatEntry(e.summary);
-                txt.setText(Html.fromHtml(title+"<br />"+summary));
-                txt.setOnClickListener(this);
-                txt.setId(e.id);
-                resultArea.addView(txt);
-            }
-            return true; // XXX: ???
-        }
-
-        return false;
-    }
-
     private String formatEntry(String text) {
         return
             text.replaceAll("`([^`]*)`","<b>$1</b>")
