@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import android.graphics.Typeface;
 import android.text.style.StyleSpan;
 import android.text.style.BackgroundColorSpan;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
 import android.graphics.Color;
 import android.text.TextPaint;
@@ -53,6 +54,14 @@ public class DataFormatter {
             case '[':
                 i = format3(text, i+1, sb, styles);
                 break;
+            case '<':
+                i = format5(text, i+1, sb, styles);                
+                break;
+            case '-':
+                if(text.substring(i+1).startsWith("ex:")) {
+                    i = format4(text, i+1, sb ,styles);
+                    break;
+                }
             default:
                 sb.append(text.charAt(i));
             }
@@ -61,24 +70,60 @@ public class DataFormatter {
 
     private static int format1(String text, int start, StringBuilder sb, List<StyleWithRegion> styles) {
         int end = text.indexOf('`', start);
-        styles.add(new StyleWithRegion(new StyleSpan(Typeface.BOLD), sb.length(), sb.length()+end-start));
-        sb.append(text.substring(start,end));
+        if(end != -1) {
+            styles.add(new StyleWithRegion(new StyleSpan(Typeface.BOLD), sb.length(), sb.length()+end-start));
+            sb.append(text.substring(start,end));
+        } else {
+            end = start;
+        }
         return end;
     }
 
     private static int format2(String text, int start, StringBuilder sb, List<StyleWithRegion> styles) {
         int end = text.indexOf('}', start);
-        styles.add(new StyleWithRegion(new StyleSpan(Typeface.BOLD), sb.length(), sb.length()+end-start));
-        styles.add(new StyleWithRegion(new BackgroundColorSpan(Color.BLUE), sb.length(), sb.length()+end-start));
-        sb.append(text.substring(start,end));
+        if(end != -1) {
+            styles.add(new StyleWithRegion(new StyleSpan(Typeface.BOLD), sb.length(), sb.length()+end-start));
+            styles.add(new StyleWithRegion(new ForegroundColorSpan(Color.YELLOW), sb.length(), sb.length()+end-start));
+            sb.append(text.substring(start,end));
+        } else {
+            end = start;
+        }
         return end;
     }
 
     private static int format3(String text, int start, StringBuilder sb, List<StyleWithRegion> styles) {
         int end = text.indexOf(']', start);
-        styles.add(new StyleWithRegion(new StyleSpan(Typeface.BOLD), sb.length(), sb.length()+end-start));
-        styles.add(new StyleWithRegion(new UnderlineSpan(), sb.length(), sb.length()+end-start));
-        sb.append(text.substring(start,end));
+        if(end != -1) {
+            styles.add(new StyleWithRegion(new StyleSpan(Typeface.BOLD), sb.length(), sb.length()+end-start));
+            styles.add(new StyleWithRegion(new BackgroundColorSpan(Color.BLUE), sb.length(), sb.length()+end-start));
+            sb.append(text.substring(start,end));
+        } else {
+            end = start;
+        }
+        return end;
+    }
+
+    private static int format4(String text, int start, StringBuilder sb, List<StyleWithRegion> styles) {
+        int end = text.indexOf('\n', start);
+        if(end != -1) {
+            styles.add(new StyleWithRegion(new UnderlineSpan(), sb.length()+4, sb.length()+end-start));
+            styles.add(new StyleWithRegion(new ForegroundColorSpan(Color.CYAN), sb.length()+4, sb.length()+end-start));
+            sb.append(text.substring(start,end)+"\n");
+        } else {
+            end = start;
+        }
+        return end;
+    }
+
+    private static int format5(String text, int start, StringBuilder sb, List<StyleWithRegion> styles) {
+        int end = text.indexOf('>', start);
+        if(end != -1) {
+            styles.add(new StyleWithRegion(new StyleSpan(Typeface.BOLD), sb.length(), sb.length()+end-start));
+            styles.add(new StyleWithRegion(new ForegroundColorSpan(Color.GREEN), sb.length(), sb.length()+end-start));
+            sb.append(text.substring(start,end));
+        } else {
+            end = start;
+        }
         return end;
     }
 

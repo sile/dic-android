@@ -1,0 +1,5 @@
+$ sbcl --script make-dic-build-command.lisp
+$ ./dic-build <text-dic> <output-dir>  
+# => text-dic-format: https://github.com/sile/dic-lisp
+
+
